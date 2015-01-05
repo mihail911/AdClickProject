@@ -28,7 +28,7 @@ class IdentityFeatures(BaseEstimator):
         #widths = [d.data['C15'] for d in data_points]
         #heights = [d.data['C16'] for d in data_points]
         for d in data_points:
-            features.append([d.data['C15', d.data['C16']]])
+            features.append([d.data['C15'], d.data['C16']])
 
         return np.array(features)
 
