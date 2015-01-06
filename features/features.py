@@ -25,10 +25,32 @@ class IdentityFeatures(BaseEstimator):
 
     def transform(self, data_points):
         features = []
-        #widths = [d.data['C15'] for d in data_points]
-        #heights = [d.data['C16'] for d in data_points]
         for d in data_points:
-            features.append([d.data['C15'], d.data['C16']])
+            features.append([float(d.data['C15']), float(d.data['C16'])])
+
+        return np.array(features, dtype=np.float32)
+
+    def fit_transform(self, data_points, y=None, **fit_params):
+        #May implement this later if necessary
+        pass
+
+class IPFeatures(BaseEstimator):
+    """Class for implementing features related to device IP values;
+    will probably combine this with a broader feature set."""
+    def __init__(self):
+        pass
+
+    def get_feature_names(self):
+        return np.array(['device_ip']) #try silly features for proof-of-concept
+
+    def fit(self, data_points, y=None):
+        pass
+
+    def transform(self, data_points):
+        features = []
+        for d in data_points:
+            ip = int(d.data['device_ip'],16) #Convert hex string to integer
+            features.append([ip])
 
         return np.array(features)
 
@@ -54,7 +76,7 @@ class FeatureStacker(BaseEstimator):
     def transform(self, data_points):
         features = []
         for name, estimator in self.transformers:
-            features.append(estimator.append(data_points))
+            features.append(estimator.transform(data_points))
         sparse_features = [sparse.issparse(f) for f in features]
         if np.any(sparse_features):
             features = np.hstack(features).tocsr()
