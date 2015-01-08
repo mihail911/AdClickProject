@@ -17,6 +17,10 @@ class DataPoint(object):
     def to_json(self):
         return json.dumps(self.data)
 
+    @classmethod
+    def from_json(cls, json_str):
+        return json.loads(json_str)
+
 class DataStreamer(object):
     """Class for streaming data."""
 
@@ -34,11 +38,19 @@ class DataStreamer(object):
 
     @classmethod
     def load_data_file(cls, file_name):
-        file = bz2.BZ2File(file_name, 'rb')
+        """Reads csv-file stored in bz2 format."""
+        file = bz2.BZ2File(file_name, mode='rb')
         reader = csv.reader(file)
         fields = reader.next()
         for line in reader:
             data_point = DataPoint.extract_data(line, fields)
             yield data_point
 
+    @classmethod
+    def load_bz2_file(cls, file_name):
+        """Reads collection of json-strings stored in bz2 format."""
+        file = bz2.BZ2File(file_name, mode='rb')
+        for line in file:
+            yield DataPoint.from_json(line.strip('\n'))
+        file.close()
 
