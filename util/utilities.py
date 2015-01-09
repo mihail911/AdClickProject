@@ -1,13 +1,17 @@
 __author__ = 'mihaileric'
-import json
-from numpy import mean, std, min, max
-import cPickle as pickle
-from collections import Counter
 
 import os,sys
 """Add root directory path"""
 root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(root_dir)
+
+import json
+from numpy import mean, std, min, max
+import cPickle as pickle
+from collections import Counter
+import logging
+import scipy.sparse
+import bz2
 
 all_counters = ('C1_counts', 'C15_counts',
 'C16_counts', 'C17_counts', 'C18_counts', 'C19_counts', 'C20_counts',
@@ -45,4 +49,20 @@ def feature_count_stats():
         %(feature_counter, mean(feat_count.values()), std(feat_count.values()),
         min(feat_count.values()), max(feat_count.values()), len(feat_count.values()))
 
+def save_sparse_csr(filename, array):
+    """
+    Saves a sparse scipy matrix with custom representation in bz2 format.
+    """
+    outfile = bz2.BZ2File(filename+'.me.bz2', mode='wb', compresslevel=9)
+    outfile.write(str(array.shape[0]) + "," + array.shape[1] + '\n') #Store dimensions of matrix
+
+    #Store all non-zero entries along with their location (row,col)
+    row_vals, col_vals = array.nonzero()
+    logging.info("Saving sparse matrix of dimensions (%s, %s) to %s" %(array.shape[0], array.shape[1], filename))
+    for row, col in zip(row_vals.tolist(), col_vals.tolist()):
+        outfile.write(str(row) + "," + str(col) + "," + str(array[row,col]))
+    outfile.close()
+
+def load_sparse_csr(filename):
+    """Loads a sparse matrix stored in custom representation in bz2 compressed format."""
 
