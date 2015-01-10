@@ -25,4 +25,3 @@ def generate_feature_vector(filename):
     feature_vector = stacker.transform(data_points)
     #TODO: write feature_vector to disk
     save_sparse_csr(outfilename, feature_vector)
-   ß
