@@ -34,7 +34,9 @@ class DataStreamer(object):
             if count % 10000 == 0:
                 logging.info("Processed %d examples", count)
             data_point = DataPoint.extract_data(line, fields)
+            yield data_point
             count += 1
+        file.close()
 
     @classmethod
     def load_data_file(cls, file_name):

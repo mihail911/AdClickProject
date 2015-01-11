@@ -21,7 +21,7 @@ def build_logistic_regression_model(*args):
     pipeline = Pipeline([('feat', features), ('log_reg', model)])
     return pipeline
 
-#TODO: Make an SVM model
+#TODO: Make an SVM model and other models if necessary
 
 
 
