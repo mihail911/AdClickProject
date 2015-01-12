@@ -14,8 +14,11 @@ from sklearn.metrics import f1_score
 import numpy as np
 import logging
 
-data_filename = "../util.subsampled_data_train.bz2"
+train_data_filename = "../util/subsampled_data_train.bz2"
+test_data_filename = "../util/subsampled_data_test.bz2"
 outfile_name = "feature_vector"
+
+logging.basicConfig(level=logging.INFO)
 
 #TODO: Do argument parsing for getting what features user wants in feature vector generation
 
@@ -37,7 +40,7 @@ def generate_labels_vector(data_points):
     """Generates labels for all data samples, provided as argument."""
     labels = []
     for d in data_points:
-        labels.append(float(d.data['click']))
+        labels.append([float(d['click'])])
     return np.array(labels, dtype=np.float32)
 
 def train_model(feature_vec_filename=outfile_name, model_type='logistic_regression'):
@@ -64,6 +67,6 @@ def test_model(model, test_filename=None):
     logging.info("Calculated f1 score for model: %f" %f1)
 
 
-generate_feature_vector(data_filename)
-model = train_model(outfile_name, 'logistic_regression')
-test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set
+generate_feature_vector(train_data_filename)
+#model = train_model(outfile_name, 'logistic_regression')
+#test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set

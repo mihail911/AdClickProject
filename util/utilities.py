@@ -55,8 +55,8 @@ def save_sparse_csr(filename, array):
     """
     Saves a sparse scipy matrix with custom representation in bz2 format.
     """
-    outfile = bz2.BZ2File(filename+'.me.bz2', mode='wb', compresslevel=9)
-    outfile.write(str(array.shape[0]) + "," + array.shape[1] + '\n') #Store dimensions of matrix
+    outfile = bz2.BZ2File('../output/'+filename+'.me.bz2', mode='wb', compresslevel=9)
+    outfile.write(str(array.shape[0]) + "," + str(array.shape[1]) + '\n') #Store dimensions of matrix
 
     #Store all non-zero entries along with their location (row,col)
     row_vals, col_vals = array.nonzero()
@@ -67,7 +67,7 @@ def save_sparse_csr(filename, array):
 
 def load_sparse_csr(filename):
     """Loads a sparse matrix stored in custom representation in bz2 compressed format."""
-    infile = bz2.BZ2File(filename+'.me.bz2', mode='rb')
+    infile = bz2.BZ2File('../output/'+filename+'.me.bz2', mode='rb')
     #Store matrix values in separate data array, row index, and column index array
     data = []
     row_ind = []

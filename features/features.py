@@ -26,7 +26,7 @@ class IdentityFeatures(BaseEstimator):
     def transform(self, data_points):
         features = []
         for d in data_points:
-            features.append([float(d.data['C15']), float(d.data['C16'])])
+            features.append([float(d['C15']), float(d['C16'])])
 
         return np.array(features, dtype=np.float32)
 
@@ -49,7 +49,7 @@ class IPFeatures(BaseEstimator):
     def transform(self, data_points):
         features = []
         for d in data_points:
-            ip = int(d.data['device_ip'],16) #Convert hex string to integer
+            ip = int(d['device_ip'],16) #Convert hex string to integer
             features.append([ip])
 
         return np.array(features)
