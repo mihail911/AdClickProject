@@ -62,7 +62,7 @@ def save_sparse_csr(filename, array):
     row_vals, col_vals = array.nonzero()
     logging.info("Saving sparse matrix of dimensions (%s, %s) to %s" %(array.shape[0], array.shape[1], filename+'.me.bz2'))
     for row, col in zip(row_vals.tolist(), col_vals.tolist()):
-        outfile.write(str(row) + "," + str(col) + "," + str(array[row,col]))
+        outfile.write(str(row) + "," + str(col) + "," + str(array[row,col]) + '\n')
     outfile.close()
 
 def load_sparse_csr(filename):

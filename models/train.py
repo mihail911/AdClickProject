@@ -43,7 +43,7 @@ def generate_labels_vector(data_points):
         labels.append([float(d['click'])])
     return np.array(labels, dtype=np.float32)
 
-def train_model(feature_vec_filename=outfile_name, model_type='logistic_regression'):
+def train_model(feature_vec_filename=outfile_name, model_type=None):
     """Trains model of specified type by loading provided feature vector."""
     model = None
     if model_type == 'logistic_regression':
@@ -67,6 +67,9 @@ def test_model(model, test_filename=None):
     logging.info("Calculated f1 score for model: %f" %f1)
 
 
-generate_feature_vector(train_data_filename)
-#model = train_model(outfile_name, 'logistic_regression')
+#generate_feature_vector(train_data_filename)
+model = train_model(outfile_name, 'logistic_regression')
 #test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set
+
+
+#TODO: Start using an ipython notebook
