@@ -72,21 +72,21 @@ def load_sparse_csr(filename):
     data = []
     row_ind = []
     col_ind = []
-    row_size, col_size = infile.read().strip().split(',')
+    row_size, col_size = infile.readline().strip().split(',')
 
     for line in infile:
         row, col, val = line.strip().split(',')
-        data += [int(val)]
-        row_ind += [int(row)]
-        col_ind += [int(col)]
+        data += [float(val)]
+        row_ind += [float(row)]
+        col_ind += [float(col)]
     infile.close()
 
-    logging.info('Loading sparse matrix of shape (%s, %s) from $s' %(row_size, col_size, filename+'.me.bz2'))
+    logging.info('Loading sparse matrix of shape (%s, %s) from %s' %(row_size, col_size, filename+'.me.bz2'))
     data = np.array(data)
-    row_ind = np.array(data)
-    col_ind = np.array(data)
+    row_ind = np.array(row_ind)
+    col_ind = np.array(col_ind)
 
-    return csr_matrix(data, (row_ind, col_ind), shape=(int(row_size), int(col_size)))
+    return csr_matrix((data, (row_ind, col_ind)), shape=(int(row_size), int(col_size)))
 
 
 

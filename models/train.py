@@ -71,5 +71,3 @@ def test_model(model, test_filename=None):
 model = train_model(outfile_name, 'logistic_regression')
 #test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set
 
-
-#TODO: Start using an ipython notebook
