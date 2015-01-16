@@ -43,17 +43,23 @@ def generate_labels_vector(data_points):
         labels.append([float(d['click'])])
     return np.array(labels, dtype=np.float32)
 
-def train_model(feature_vec_filename=outfile_name, model_type=None):
+def train_model(train_data_filename, model_type=None):
     """Trains model of specified type by loading provided feature vector."""
     model = None
     if model_type == 'logistic_regression':
-        model = build_logistic_regression_model()
+        model = build_logistic_regression_model(('identity', IdentityFeatures()),
+                                         ('ip', IPFeatures()))
     #TODO: handle cases for loading other models when I finish writing them
-    feature_vector = load_sparse_csr(outfile_name)
-    labels_vector = load_sparse_csr('labels_vector')
+    #feature_vector = load_sparse_csr(outfile_name) #DO I REALLY NEED TO WRITE VECTORS TO DISK?
+    #labels_vector = load_sparse_csr('labels_vector')
+    data_points = [d for d in DataStreamer.load_bz2_file(train_data_filename)]
+    labels = generate_labels_vector(data_points)
 
     logging.info("Training %s model" %(model_type))
-    model.fit(feature_vector, labels_vector)
+
+    #TODO: /Users/mihaileric/anaconda/lib/python2.7/site-packages/sklearn/preprocessing/label.py:125: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples, ), for example using ravel().
+  #y = column_or_1d(y, warn=True)
+    model.fit(data_points, labels)
 
     return model
 
@@ -68,6 +74,6 @@ def test_model(model, test_filename=None):
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(outfile_name, 'logistic_regression')
+model = train_model(train_data_filename, 'logistic_regression')
 #test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set
 
