@@ -56,9 +56,6 @@ def train_model(train_data_filename, model_type=None):
     labels = generate_labels_vector(data_points)
 
     logging.info("Training %s model" %(model_type))
-
-    #TODO: /Users/mihaileric/anaconda/lib/python2.7/site-packages/sklearn/preprocessing/label.py:125: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples, ), for example using ravel().
-  #y = column_or_1d(y, warn=True)
     model.fit(data_points, labels)
 
     return model
@@ -66,7 +63,7 @@ def train_model(train_data_filename, model_type=None):
 def test_model(model, test_filename=None):
     """Test model and report statistics."""
     data_points = [d for d in DataStreamer.load_bz2_file(test_filename)]
-    true_output = np.array([d.data['click'] for d in data_points])
+    true_output = np.array([d['click'] for d in data_points])
     logging.info("Testing model on %s containing %d data points." %(test_filename, len(data_points)))
     prediction = model.predict(data_points)
     f1 = f1_score(prediction, true_output)
@@ -75,5 +72,5 @@ def test_model(model, test_filename=None):
 
 #generate_feature_vector(train_data_filename)
 model = train_model(train_data_filename, 'logistic_regression')
-#test_model(model, outfile_name) #TODO: Testing on train data for now; will change to cross-validation/test set
+test_model(model, test_data_filename) #TODO: Testing on train data for now; will change to cross-validation/test set
 
