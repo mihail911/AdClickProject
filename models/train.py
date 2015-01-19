@@ -62,8 +62,8 @@ def train_model(train_data_filename, model_type=None):
 
 def test_model(model, test_filename=None):
     """Test model and report statistics."""
-    data_points = [d for d in DataStreamer.load_bz2_file(test_filename)]
-    true_output = np.array([d['click'] for d in data_points])
+    data_points = [d for d in DataStreamer.load_bz2_file(train_data_filename)]
+    true_output = np.array([float(d['click']) for d in data_points])
     logging.info("Testing model on %s containing %d data points." %(test_filename, len(data_points)))
     prediction = model.predict(data_points)
     f1 = f1_score(prediction, true_output)
