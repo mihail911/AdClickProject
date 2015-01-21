@@ -6,7 +6,7 @@ root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(root_dir)
 
 import bz2
-from models import build_logistic_regression_model
+from models import build_logistic_regression_model, build_svm_model
 from util.DataStreamer import DataPoint, DataStreamer
 from features.features import FeatureStacker, IPFeatures, IdentityFeatures
 from util.utilities import  load_sparse_csr, save_sparse_csr
@@ -49,6 +49,10 @@ def train_model(train_data_filename, model_type=None):
     if model_type == 'logistic_regression':
         model = build_logistic_regression_model(('identity', IdentityFeatures()),
                                          ('ip', IPFeatures()))
+    elif model_type == 'svm':
+        model = build_logistic_regression_model(('identity', IdentityFeatures()),
+                                         ('ip', IPFeatures()))
+
     #TODO: handle cases for loading other models when I finish writing them
     #feature_vector = load_sparse_csr(outfile_name) #DO I REALLY NEED TO WRITE VECTORS TO DISK?
     #labels_vector = load_sparse_csr('labels_vector')
@@ -71,6 +75,6 @@ def test_model(model, test_filename=None):
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(train_data_filename, 'logistic_regression')
-test_model(model, test_data_filename) #TODO: Testing on train data for now; will change to cross-validation/test set
+model = train_model(train_data_filename, 'svm')
+test_model(model, test_data_filename)
 
