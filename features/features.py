@@ -49,7 +49,7 @@ class IPFeatures(BaseEstimator):
     def transform(self, data_points):
         features = []
         for d in data_points:
-            ip = int(d['device_ip'],16) #Convert hex string to integer
+            ip = int(d['device_ip'],16) % 1000 #Convert hex string to integer
             features.append([ip])
 
         return np.array(features)

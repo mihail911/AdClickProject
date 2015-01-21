@@ -68,13 +68,16 @@ def test_model(model, test_filename=None):
     """Test model and report statistics."""
     data_points = [d for d in DataStreamer.load_bz2_file(train_data_filename)]
     true_output = np.array([float(d['click']) for d in data_points])
+    #features = [('identity', IdentityFeatures()), ('ip', IPFeatures())]
+    #feature_stacker = FeatureStacker(features)
+    #transformed_features = feature_stacker.transform(data_points)
     logging.info("Testing model on %s containing %d data points." %(test_filename, len(data_points)))
-    prediction = model.predict(data_points)
+    prediction = model.predict(data_points) #Prediction always returns vector of 1s
     f1 = f1_score(prediction, true_output)
     logging.info("Calculated f1 score for model: %f" %f1)
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(train_data_filename, 'svm')
+model = train_model(train_data_filename, 'logistic_regression')
 test_model(model, test_data_filename)
 
