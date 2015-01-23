@@ -27,6 +27,9 @@ class IdentityFeatures(BaseEstimator):
         features = []
         for d in data_points:
             features.append([float(d['C15']), float(d['C16'])])
+            if d['click']: #is an ad
+                pass
+                #print 'features for click: ', d['C15'], ' ', d['C16']
 
         return np.array(features, dtype=np.float32)
 
@@ -49,13 +52,38 @@ class IPFeatures(BaseEstimator):
     def transform(self, data_points):
         features = []
         for d in data_points:
-            ip = int(d['device_ip'],16) % 1000 #Convert hex string to integer
+            ip = int(d['device_ip'],16) % 10 #Convert hex string to integer
             features.append([ip])
 
         return np.array(features)
 
     def fit_transform(self, data_points, y=None, **fit_params):
         #May implement this later if necessary
+        pass
+
+class TimeFeatures(BaseEstimator):
+    """Features making use of the timestamp of the ad. Proper processing is done
+    in order to convert timestamp to useful format."""
+    def __init__(self):
+        pass
+
+    def get_feature_names(self):
+        return np.array(['timestamp_info'])
+
+    @staticmethod
+    def get_day_hour(timestamp):
+        """Returns day and hour of timestamp as an array."""
+        return np.array([float(timestamp[4:6]), float(timestamp[6:8])])
+
+    def fit(self, data_points, y=None):
+        pass
+
+    def transform(self, data_points):
+        features = []
+        for d in data_points:
+            features.append(TimeFeatures.get_day_hour(d['hour']))
+
+    def fit_transform(self, data_points, y=None, **fit_params):
         pass
 
 class FeatureStacker(BaseEstimator):

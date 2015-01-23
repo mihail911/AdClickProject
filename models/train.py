@@ -84,6 +84,6 @@ def test_model(model, train_filename=None, test_filename=None):
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(args.train_data_file, 'svm')
-test_model(model, args.train_data_file, args.test_data_file)
+model = train_model(train_data_filename, 'svm')
+test_model(model, train_data_filename, test_data_filename)
 
