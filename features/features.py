@@ -81,5 +81,5 @@ class FeatureStacker(BaseEstimator):
         if np.any(sparse_features):
             features = np.hstack(features).tocsr()
         else:
-            features = np.hstack(features) #BUG HERE--features = [] during training
+            features = np.hstack(features)
         return features

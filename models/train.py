@@ -13,6 +13,7 @@ from util.utilities import  load_sparse_csr, save_sparse_csr
 from sklearn.metrics import f1_score
 import numpy as np
 import logging
+import argparse
 
 train_data_filename = "../util/subsampled_data_train.bz2"
 test_data_filename = "../util/subsampled_data_test.bz2"
@@ -20,7 +21,12 @@ outfile_name = "feature_vector"
 
 logging.basicConfig(level=logging.INFO)
 
-#TODO: Do argument parsing for getting what features user wants in feature vector generation
+parser = argparse.ArgumentParser(description='arguments for train/test')
+parser.add_argument('--train_data_file', type=str, help='Data file to be used for training model')
+parser.add_argument('--test_data_file', type=str, help='Data file to be used for testing model')
+parser.add_argument('--features', type=str, nargs='+', help='Features to extract from data')
+parser.add_argument('--model', type=str, help='Modelling algorithm to use')
+args = parser.parse_args()
 
 def generate_feature_vector(data_filename):
     """Load data file, which is a bz2 file, of training samples,
@@ -64,9 +70,9 @@ def train_model(train_data_filename, model_type=None):
 
     return model
 
-def test_model(model, test_filename=None):
+def test_model(model, train_filename=None, test_filename=None):
     """Test model and report statistics."""
-    data_points = [d for d in DataStreamer.load_bz2_file(train_data_filename)]
+    data_points = [d for d in DataStreamer.load_bz2_file(train_filename)]
     true_output = np.array([float(d['click']) for d in data_points])
     #features = [('identity', IdentityFeatures()), ('ip', IPFeatures())]
     #feature_stacker = FeatureStacker(features)
@@ -78,6 +84,6 @@ def test_model(model, test_filename=None):
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(train_data_filename, 'logistic_regression')
-test_model(model, test_data_filename)
+model = train_model(args.train_data_file, 'svm')
+test_model(model, args.train_data_file, args.test_data_file)
 
