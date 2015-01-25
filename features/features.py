@@ -52,7 +52,7 @@ class IPFeatures(BaseEstimator):
     def transform(self, data_points):
         features = []
         for d in data_points:
-            ip = int(d['device_ip'],16) % 10 #Convert hex string to integer
+            ip = int(d['device_ip'],16) % 1000 #Convert hex string to integer
             features.append([ip])
 
         return np.array(features)
@@ -82,6 +82,7 @@ class TimeFeatures(BaseEstimator):
         features = []
         for d in data_points:
             features.append(TimeFeatures.get_day_hour(d['hour']))
+        return np.array(features)
 
     def fit_transform(self, data_points, y=None, **fit_params):
         pass
