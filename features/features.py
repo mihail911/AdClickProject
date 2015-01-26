@@ -7,6 +7,7 @@ sys.path.append(root_dir)
 
 from util.DataStreamer import DataStreamer
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 from scipy import sparse
 
@@ -36,6 +37,36 @@ class IdentityFeatures(BaseEstimator):
     def fit_transform(self, data_points, y=None, **fit_params):
         #May implement this later if necessary
         pass
+
+class SiteIDFeatures(CountVectorizer):
+    """Class that learns a vocabulary on all encountered site IDs."""
+    def __init__(self):
+        pass
+
+    def get_feature_names(self):
+        return np.array(['site_id'])
+
+    def convert_features(self, data_points=None):
+        features = []
+        for d in data_points:
+            features.append([float(d['site_id'])])
+        return features
+
+    def fit(self, data_points, y=None):
+        features = []
+        for d in data_points:
+            features.append([float(d['site_id'])])
+        super(SiteIDFeatures, self).fit(features, y)
+
+
+    def transform(self, data_points):
+        features = SiteIDFeatures.convert_features(data_points)
+        return super(SiteIDFeatures, self).transform(features)
+
+    def fit_transform(self, data_points, y=None, **fit_params):
+        #May implement this later if necessary
+        pass
+
 
 class IPFeatures(BaseEstimator):
     """Class for implementing features related to device IP values;
