@@ -24,6 +24,12 @@ class IdentityFeatures(BaseEstimator):
     def fit(self, data_points, y=None):
         pass
 
+    def docs_from_data_points(self, data_points=None):
+        docs = []
+        for d in data_points:
+            docs.append([float(d['C15']), float(d['C16'])])
+        return docs
+
     def transform(self, data_points):
         features = []
         for d in data_points:
@@ -46,21 +52,19 @@ class SiteIDFeatures(CountVectorizer):
     def get_feature_names(self):
         return np.array(['site_id'])
 
-    def convert_features(self, data_points=None):
-        features = []
+    def docs_from_data_points(self, data_points=None):
+        docs = []
         for d in data_points:
-            features.append([float(d['site_id'])])
-        return features
+            docs.append([float(d['site_id'])])
+        return docs
 
     def fit(self, data_points, y=None):
-        features = []
-        for d in data_points:
-            features.append([float(d['site_id'])])
+        features = SiteIDFeatures.docs_from_data_points(data_points)
         super(SiteIDFeatures, self).fit(features, y)
 
 
     def transform(self, data_points):
-        features = SiteIDFeatures.convert_features(data_points)
+        features = SiteIDFeatures.docs_from_data_points(data_points)
         return super(SiteIDFeatures, self).transform(features)
 
     def fit_transform(self, data_points, y=None, **fit_params):

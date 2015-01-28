@@ -7,7 +7,7 @@ import os,sys
 root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.append(root_dir)
 
-from features.features import IdentityFeatures, IPFeatures, FeatureStacker, TimeFeatures
+from features.features import IdentityFeatures, IPFeatures, FeatureStacker, TimeFeatures, SiteIDFeatures
 from util.DataStreamer import DataPoint
 
 #custom assert function
@@ -41,6 +41,13 @@ assert_equals(13.0, features[1,0])
 assert_equals(40.0, features[1,1])
 
 print 'passed Time Features test'
+
+site_id_feat_extractor = SiteIDFeatures()
+site_id_feat_extractor.fit(examples)
+features = site_id_feat_extractor.transform(examples)
+
+#TODO: Add actual checks here...
+print 'passed Site ID Features test'
 
 ip_feat_extractor = IPFeatures()
 stacked_feat_extractor = FeatureStacker([('identity', ident_feat_extractor),
