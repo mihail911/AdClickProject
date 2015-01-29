@@ -31,23 +31,44 @@ class IdentityFeatures(BaseEstimator):
         return docs
 
     def transform(self, data_points):
-        features = []
-        for d in data_points:
-            features.append([float(d['C15']), float(d['C16'])])
-            if d['click']: #is an ad
-                pass
-                #print 'features for click: ', d['C15'], ' ', d['C16']
-
-        return np.array(features, dtype=np.float32)
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs, dtype=np.float32)
 
     def fit_transform(self, data_points, y=None, **fit_params):
         #May implement this later if necessary
         pass
 
-class SiteIDFeatures(CountVectorizer):
+class AbstractDocsVectorizer(CountVectorizer):
+    def __init__(self, **init_params):
+        #Do any other initialization stuff with params
+        super(AbstractDocsVectorizer, self).__init__(**init_params)
+
+    #All other methods (fit, transform, fit_transform) will be overloaded in derived classes
+
+
+class SiteIDFeatures(AbstractDocsVectorizer):
     """Class that learns a vocabulary on all encountered site IDs."""
-    def __init__(self):
-        pass
+    def __init__(self,
+                 input=u'content',
+                 encoding=u'utf-8',
+                 charset=None,
+                 decode_error=u'strict',
+                 charset_error=None,
+                 strip_accents=None,
+                 lowercase=True,
+                 preprocessor=None,
+                 tokenizer=None,
+                 stop_words=None,
+                 token_pattern=u'(?u)\b\w\w+\b',
+                 ngram_range=(1, 1),
+                 analyzer=u'word',
+                 max_df=1.0,
+                 min_df=1,
+                 max_features=None,
+                 vocabulary=None,
+                 binary=False,
+                 dtype=np.int64):
+        super(SiteIDFeatures, self).__init__(**get_params(locals())) #TODO: Write get_params
 
     def get_feature_names(self):
         return np.array(['site_id'])
@@ -55,16 +76,16 @@ class SiteIDFeatures(CountVectorizer):
     def docs_from_data_points(self, data_points=None):
         docs = []
         for d in data_points:
-            docs.append([float(d['site_id'])])
+            docs.append([float(int(d['site_id'], 16))])
         return docs
 
     def fit(self, data_points, y=None):
-        features = SiteIDFeatures.docs_from_data_points(data_points)
+        features = self.docs_from_data_points(data_points)
         super(SiteIDFeatures, self).fit(features, y)
 
 
     def transform(self, data_points):
-        features = SiteIDFeatures.docs_from_data_points(data_points)
+        features = self.docs_from_data_points(data_points)
         return super(SiteIDFeatures, self).transform(features)
 
     def fit_transform(self, data_points, y=None, **fit_params):
@@ -81,16 +102,19 @@ class IPFeatures(BaseEstimator):
     def get_feature_names(self):
         return np.array(['device_ip']) #try silly features for proof-of-concept
 
+    def docs_from_data_points(self, data_points=None):
+        docs = []
+        for d in data_points:
+            ip = int(d['device_ip'],16) % 1000
+            docs.append([ip])
+        return docs
+
     def fit(self, data_points, y=None):
         pass
 
     def transform(self, data_points):
-        features = []
-        for d in data_points:
-            ip = int(d['device_ip'],16) % 1000 #Convert hex string to integer
-            features.append([ip])
-
-        return np.array(features)
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs)
 
     def fit_transform(self, data_points, y=None, **fit_params):
         #May implement this later if necessary
@@ -105,19 +129,23 @@ class TimeFeatures(BaseEstimator):
     def get_feature_names(self):
         return np.array(['timestamp_info'])
 
-    @staticmethod
-    def get_day_hour(timestamp):
+    @classmethod
+    def get_day_hour(cls, timestamp):
         """Returns day and hour of timestamp as an array."""
         return np.array([float(timestamp[4:6]), float(timestamp[6:8])])
+
+    def docs_from_data_points(self, data_points=None):
+        docs = []
+        for d in data_points:
+            docs.append(TimeFeatures.get_day_hour(d['hour']))
+        return docs
 
     def fit(self, data_points, y=None):
         pass
 
     def transform(self, data_points):
-        features = []
-        for d in data_points:
-            features.append(TimeFeatures.get_day_hour(d['hour']))
-        return np.array(features)
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs)
 
     def fit_transform(self, data_points, y=None, **fit_params):
         pass

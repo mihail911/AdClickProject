@@ -46,7 +46,7 @@ site_id_feat_extractor = SiteIDFeatures()
 site_id_feat_extractor.fit(examples)
 features = site_id_feat_extractor.transform(examples)
 
-#TODO: Add actual checks here...
+print 'Site ID Features', features
 print 'passed Site ID Features test'
 
 ip_feat_extractor = IPFeatures()
