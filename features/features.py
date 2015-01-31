@@ -11,6 +11,17 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 from scipy import sparse
 
+default_params = {
+    'input':'content', 'encoding':'utf-8', 'charset':None, 'decode_error':'strict', 'charset_error':None, 'strip_accents':None, 'lowercase':True, 'preprocessor':None, 'tokenizer':None, 'stop_words':None, 'token_pattern':'(?u)\b\w\w+\b', 'ngram_range':(1, 1), 'analyzer':'word', 'max_df':1.0, 'min_df':1, 'max_features':None, 'vocabulary':None, 'binary':False, 'dtype':np.int64
+}
+
+def update_Default(new_values):
+    """Updates dict of init parameters."""
+    original = default_params.copy()
+    for key in default_params:
+        if key in new_values:
+            original[key] = new_values[key]
+    return original
 
 class IdentityFeatures(BaseEstimator):
     """Class for implementing identity indicator features for those
@@ -68,7 +79,7 @@ class SiteIDFeatures(AbstractDocsVectorizer):
                  vocabulary=None,
                  binary=False,
                  dtype=np.int64):
-        super(SiteIDFeatures, self).__init__(**get_params(locals())) #TODO: Write get_params
+        super(SiteIDFeatures, self).__init__(**update_Default(locals())) #TODO: Write get_params
 
     def get_feature_names(self):
         return np.array(['site_id'])
