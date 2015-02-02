@@ -51,11 +51,16 @@ class IdentityFeatures(BaseEstimator):
 
 class AbstractDocsVectorizer(CountVectorizer):
     def __init__(self, **init_params):
-        #Do any other initialization stuff with params
         super(AbstractDocsVectorizer, self).__init__(**init_params)
 
-    #All other methods (fit, transform, fit_transform) will be overloaded in derived classes
+    def fit(self, raw_documents, y=None, **init_params):
+        return super(AbstractDocsVectorizer, self).fit(self.docs_from_data_points(raw_documents), y, **init_params)
 
+    def transform(self, raw_documents, y=None, **init_params):
+        return super(AbstractDocsVectorizer, self).transform(self.docs_from_data_points(raw_documents), y, **init_params)
+
+    def fit_transform(self, raw_documents, y=None, **init_params):
+        return super(AbstractDocsVectorizer, self).fit_transform(self.docs_from_data_points(raw_documents), y, **init_params)
 
 class SiteIDFeatures(AbstractDocsVectorizer):
     """Class that learns a vocabulary on all encountered site IDs."""
@@ -90,18 +95,22 @@ class SiteIDFeatures(AbstractDocsVectorizer):
             docs.append([float(int(d['site_id'], 16))])
         return docs
 
-    def fit(self, data_points, y=None):
-        features = self.docs_from_data_points(data_points)
-        super(SiteIDFeatures, self).fit(features, y)
+    # def fit(self, data_points, y=None):
+    #     features = self.docs_from_data_points(data_points)
+    #     super(SiteIDFeatures, self).fit(features, y)
 
 
-    def transform(self, data_points):
-        features = self.docs_from_data_points(data_points)
-        return super(SiteIDFeatures, self).transform(features)
+    # def transform(self, data_points):
+    #     features = self.docs_from_data_points(data_points)
+    #     return super(SiteIDFeatures, self).transform(features)
 
-    def fit_transform(self, data_points, y=None, **fit_params):
-        features = self.docs_from_data_points(data_points)
-        return super(SiteIDFeatures, self).fit_transform(features, y, **fit_params)
+    # def fit_transform(self, data_points, y=None, **fit_params):
+    #     if type(data_points) == list:
+    #         print 'hi'
+    #     else:
+    #         print 'no'
+    #     features = self.docs_from_data_points(data_points)
+    #     return super(SiteIDFeatures, self).fit_transform(features, y, **fit_params)
 
 
 class IPFeatures(BaseEstimator):
