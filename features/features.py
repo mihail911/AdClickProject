@@ -100,8 +100,8 @@ class SiteIDFeatures(AbstractDocsVectorizer):
         return super(SiteIDFeatures, self).transform(features)
 
     def fit_transform(self, data_points, y=None, **fit_params):
-        #May implement this later if necessary
-        pass
+        features = self.docs_from_data_points(data_points)
+        return super(SiteIDFeatures, self).fit_transform(features, y, **fit_params)
 
 
 class IPFeatures(BaseEstimator):
