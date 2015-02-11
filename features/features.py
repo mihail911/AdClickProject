@@ -15,7 +15,7 @@ default_params = {
     'input':'content', 'encoding':'utf-8', 'charset':None, 'decode_error':'strict', 'charset_error':None, 'strip_accents':None, 'lowercase':True, 'preprocessor':None, 'tokenizer':None, 'stop_words':None, 'token_pattern':'(?u)\b\w\w+\b', 'ngram_range':(1, 1), 'analyzer':'word', 'max_df':1.0, 'min_df':1, 'max_features':None, 'vocabulary':None, 'binary':False, 'dtype':np.int64
 }
 
-def update_Default(new_values):
+def update_default(new_values):
     """Updates dict of init parameters."""
     original = default_params.copy()
     for key in default_params:
@@ -84,7 +84,7 @@ class SiteIDFeatures(AbstractDocsVectorizer):
                  vocabulary=None,
                  binary=False,
                  dtype=np.int64):
-        super(SiteIDFeatures, self).__init__(**update_Default(locals())) #TODO: Write get_params
+        super(SiteIDFeatures, self).__init__(**update_default(locals())) #TODO: Write get_params
 
     def get_feature_names(self):
         return np.array(['site_id'])
@@ -92,7 +92,7 @@ class SiteIDFeatures(AbstractDocsVectorizer):
     def docs_from_data_points(self, data_points=None):
         docs = []
         for d in data_points:
-            docs.append([float(int(d['site_id'], 16))])
+            docs.append(d['site_id']) #Adding single 'entity' instead of ['entity']
         return docs
 
     # def fit(self, data_points, y=None):
