@@ -46,14 +46,17 @@ site_id_feat_extractor = SiteIDFeatures()
 features = site_id_feat_extractor.fit_transform(examples)
 #features = site_id_feat_extractor.transform(examples)
 
-print 'Site ID Features', features
+assert_equals(1, features[0,0])
+assert_equals(1, features[1,1])
 print 'passed Site ID Features test'
 
 ip_feat_extractor = IPFeatures()
 stacked_feat_extractor = FeatureStacker([('identity', ident_feat_extractor),
-                                         ('ip', ip_feat_extractor)])
-stacked_feat_extractor.fit(examples)
-features = stacked_feat_extractor.transform(examples)
+                                         ('ip', ip_feat_extractor),
+                                        ('time', time_feat_extractor),
+                                        ('site_id', site_id_feat_extractor)])
+#stacked_feat_extractor.fit(examples)
+features = stacked_feat_extractor.fit_transform(examples)
 
 assert_equals(500.0, features[0,0])
 assert_equals(503.0, features[0,1])

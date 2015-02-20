@@ -46,8 +46,8 @@ class IdentityFeatures(BaseEstimator):
         return np.array(docs, dtype=np.float32)
 
     def fit_transform(self, data_points, y=None, **fit_params):
-        #May implement this later if necessary
-        pass
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs, dtype=np.float32)
 
 class AbstractDocsVectorizer(CountVectorizer):
     def __init__(self, **init_params):
@@ -75,11 +75,11 @@ class SiteIDFeatures(AbstractDocsVectorizer):
                  preprocessor=None,
                  tokenizer=None,
                  stop_words=None,
-                 token_pattern=u'(?u)\b\w\w+\b',
                  ngram_range=(1, 1),
                  analyzer=u'word',
                  max_df=1.0,
-                 min_df=1,
+                 min_df=0,
+                 token_pattern=u'(?u)\\b\\w\\w+\\b',
                  max_features=None,
                  vocabulary=None,
                  binary=False,
@@ -137,8 +137,8 @@ class IPFeatures(BaseEstimator):
         return np.array(docs)
 
     def fit_transform(self, data_points, y=None, **fit_params):
-        #May implement this later if necessary
-        pass
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs)
 
 class TimeFeatures(BaseEstimator):
     """Features making use of the timestamp of the ad. Proper processing is done
@@ -168,7 +168,8 @@ class TimeFeatures(BaseEstimator):
         return np.array(docs)
 
     def fit_transform(self, data_points, y=None, **fit_params):
-        pass
+        docs = self.docs_from_data_points(data_points)
+        return np.array(docs)
 
 class FeatureStacker(BaseEstimator):
     """Class for specifying a set of features from which to make a
@@ -189,6 +190,17 @@ class FeatureStacker(BaseEstimator):
         features = []
         for name, estimator in self.transformers:
             features.append(estimator.transform(data_points))
+        sparse_features = [sparse.issparse(f) for f in features]
+        if np.any(sparse_features):
+            features = np.hstack(features).tocsr()
+        else:
+            features = np.hstack(features)
+        return features
+
+    def fit_transform(self, data_points, y=None, **fit_params):
+        features = []
+        for name, estimator in self.transformers:
+            features.append(estimator.fit_transform(data_points))
         sparse_features = [sparse.issparse(f) for f in features]
         if np.any(sparse_features):
             features = np.hstack(features).tocsr()
