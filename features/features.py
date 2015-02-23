@@ -203,7 +203,7 @@ class FeatureStacker(BaseEstimator):
             features.append(estimator.fit_transform(data_points))
         sparse_features = [sparse.issparse(f) for f in features]
         if np.any(sparse_features):
-            features = np.hstack(features).tocsr()
+            features = sparse.hstack(features).tocsr()
         else:
             features = np.hstack(features)
         return features

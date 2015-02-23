@@ -43,7 +43,7 @@ assert_equals(40.0, features[1,1])
 print 'passed Time Features test'
 
 site_id_feat_extractor = SiteIDFeatures()
-features = site_id_feat_extractor.fit_transform(examples)
+features = site_id_feat_extractor.fit_transform(examples) #TODO: BUG WITH FIT--string indices must be integers, not str
 #features = site_id_feat_extractor.transform(examples)
 
 assert_equals(1, features[0,0])
