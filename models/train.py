@@ -8,7 +8,7 @@ sys.path.append(root_dir)
 import bz2
 from models import build_logistic_regression_model, build_svm_model
 from util.DataStreamer import DataPoint, DataStreamer
-from features.features import FeatureStacker, IPFeatures, IdentityFeatures
+from features.features import FeatureStacker, IPFeatures, IdentityFeatures, SiteIDFeatures, TimeFeatures
 from util.utilities import  load_sparse_csr, save_sparse_csr
 from sklearn.metrics import f1_score
 import numpy as np
@@ -33,10 +33,10 @@ def generate_feature_vector(data_filename):
     generate corresponding feature vector, and write to disk."""
     data_points = [d for d in DataStreamer.load_bz2_file(data_filename)]
     labels = generate_labels_vector(data_points)
-    features = [('identity', IdentityFeatures()), ('ip', IPFeatures())]
+    features = [('identity', IdentityFeatures()), ('ip', IPFeatures()),
+                ('site_id', SiteIDFeatures()), ('time', TimeFeatures())]
     stacker = FeatureStacker(features)
-    stacker.fit(data_points)
-    feature_vector = stacker.transform(data_points)
+    feature_vector = stacker.fit_transform(data_points)
 
     #Write feature vector and labels vector to disk
     save_sparse_csr(outfile_name, feature_vector)
@@ -84,6 +84,6 @@ def test_model(model, train_filename=None, test_filename=None):
 
 
 #generate_feature_vector(train_data_filename)
-model = train_model(train_data_filename, 'svm')
+model = train_model(train_data_filename, 'logistic_regression') #Getting same f1 score wtf??
 test_model(model, train_data_filename, test_data_filename)
 
